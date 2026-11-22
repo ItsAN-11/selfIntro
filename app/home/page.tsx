@@ -164,19 +164,40 @@ export default function HomePage() {
             All projects [{projects.length}] →
           </Link>
         </div>
-        <WorkAccordion projects={projects} />
+        <div className="md:hidden">
+          <WorkAccordion projects={projects} />
+        </div>
+        <div className="hidden grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5 md:grid">
+          {projects.map((p) => (
+            <article key={p.id} data-reveal className="flex flex-col gap-3 rounded-[14px] border border-line bg-surface p-7">
+              <p className="text-xs uppercase tracking-[2px] text-muted">{p.org}</p>
+              <h3 className="font-display text-[30px] font-bold leading-[1.1]">{p.title}</h3>
+              <p className="text-[15px] leading-relaxed text-soft">{p.summary}</p>
+              <div className="mt-auto flex flex-wrap gap-2 pt-2">
+                {p.homeTags.map((t) => (
+                  <span key={t} className="rounded-full border border-line2 px-2.5 py-1 text-xs text-text2">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
 
         <div className="mt-10 border-t border-line pt-8 md:mt-14 md:pt-10" data-reveal>
           <p className="mb-5 text-[11px] uppercase tracking-[2px] text-accent md:mb-[22px] md:text-[13px]">What I build with</p>
-          <div className="grid grid-cols-4 gap-y-5 md:flex md:flex-wrap md:gap-x-[30px] md:gap-y-[26px]">
-            {stack.map((k) => (
-              <div key={k.name} className="flex flex-col items-center gap-2 md:w-[78px] md:gap-2.5">
-                <span aria-hidden className="inline-flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl md:h-14 md:w-14 md:rounded-[14px] border border-line bg-white shadow-[0_6px_16px_-8px_rgba(0,0,0,.45)]">
-                  <Image src={k.logo} alt="" width={56} height={56} loading="eager" className="h-full w-full object-contain" />
-                </span>
-                <span className="text-center text-[11px] leading-tight text-soft md:text-[13px]">{k.name}</span>
-              </div>
-            ))}
+          <p className="sr-only">{stack.map((k) => k.name).join(", ")}</p>
+          <div className="marquee" aria-hidden>
+            <div className="marquee-track">
+              {[...stack, ...stack, ...stack, ...stack].map((k, i) => (
+                <div key={`${k.name}-${i}`} data-dup={i >= stack.length || undefined} className="flex w-[76px] flex-none flex-col items-center gap-2 md:w-[96px] md:gap-2.5">
+                  <span className="inline-flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-line bg-white shadow-[0_6px_16px_-8px_rgba(0,0,0,.45)] md:h-14 md:w-14 md:rounded-[14px]">
+                    <Image src={k.logo} alt="" width={56} height={56} loading="eager" className="h-full w-full object-contain" />
+                  </span>
+                  <span className="text-center text-[11px] leading-tight text-soft md:text-[13px]">{k.name}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

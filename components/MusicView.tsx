@@ -157,9 +157,11 @@ export default function MusicView({ initial }: { initial: MusicData }) {
       {/* PROFILE */}
       <section className="mx-auto max-w-[1240px] px-8" data-reveal>
         <div className="flex flex-wrap items-center justify-between gap-10">
-          <div className="flex flex-wrap items-center gap-6">
-            <div className="relative aspect-[9/16] w-[200px] overflow-hidden border border-[#3A322B] bg-[#241E19] md:w-[220px]">
-              <Image src={profile.photo} alt="Anjali listening to music on earphones" fill loading="eager" sizes="220px" className="object-cover" />
+          <div data-profile className="flex flex-wrap items-center gap-6">
+            <div data-profile-photo className="relative h-[250px] w-[250px] flex-none overflow-hidden md:h-[270px] md:w-[270px] border border-[#3A322B] bg-[#241E19] shadow-[0_18px_40px_-12px_rgba(0,0,0,0.7)]">
+              {/* Blurred copy fills the sides; the sharp photo shows whole on top */}
+              <Image src={profile.photo} alt="" aria-hidden fill loading="eager" quality={75} sizes="64px" className="scale-110 object-cover opacity-60 blur-xl" />
+              <Image src={profile.photo} alt="Anjali listening to music on earphones" fill loading="eager" quality={90} sizes="(min-width: 768px) 152px, 141px" className="object-contain" />
             </div>
             <div className="flex flex-col gap-1.5">
               <span className="text-sm text-[#CFC3B0]">{profile.label}</span>
