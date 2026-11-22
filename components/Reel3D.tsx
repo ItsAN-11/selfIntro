@@ -73,6 +73,17 @@ export default function Reel3D() {
   const [cine, setCine] = useState<Cine>("idle");
   const [count, setCount] = useState(3);
   const [chairHot, setChairHot] = useState(false);
+  // On narrow screens the whole stage is scaled so one scene fits the width.
+  const [fit, setFit] = useState({ s: 1, mobile: false });
+  useEffect(() => {
+    const on = () => {
+      const vw = window.innerWidth;
+      setFit({ s: Math.min(1, (vw - 24) / FL), mobile: vw < 768 });
+    };
+    on();
+    window.addEventListener("resize", on);
+    return () => window.removeEventListener("resize", on);
+  }, []);
 
   const drag = useRef<{ x: number; y: number; yaw: number; pitch: number; p: number; moved: boolean } | null>(null);
   const edgeTimers = useRef<{ t?: ReturnType<typeof setTimeout>; i?: ReturnType<typeof setInterval>; dir: number }>({ dir: 0 });
@@ -265,7 +276,7 @@ export default function Reel3D() {
   const zooming = cine === "zoom" || cine === "count";
   const revealed = dragging && !lying ? Math.max(0, Math.min(4, Math.floor((p - NECK + FL * 0.35) / FL))) : scene;
   const focusIdx = Math.max(0, revealed - 1);
-  const camX = lying ? 0 : zooming ? -(3.5 * FL) : dragging || !scene ? -Math.max(0, p - 300) : -((scene - 0.5) * FL + 60);
+  const camX = lying ? 0 : zooming ? -(3.5 * FL) : dragging || !scene ? -Math.max(0, p - 300) : -((scene - 0.5) * FL + (fit.mobile ? 0 : 60));
   const ease = "cubic-bezier(.2,.7,.2,1)";
   const reelTr = dragging ? "none" : lying ? "transform 120ms linear" : `transform 1000ms ${ease}`;
   const reelX = lying ? 0 : p;
@@ -273,10 +284,16 @@ export default function Reel3D() {
   const neckPts = `0,${((W - T) / 2) * (1 - neckN / NECK)} 160,${(W - T) / 2} 160,${(W + T) / 2} 0,${W - ((W - T) / 2) * (1 - neckN / NECK)}`;
 
   const hint = lying
-    ? "Drag in any direction to turn the reel · click to set it rolling"
+    ? fit.mobile
+      ? "Tap the reel to set it rolling"
+      : "Drag in any direction to turn the reel · click to set it rolling"
     : revealed >= 4
-      ? "Scene 4 of 4 · pull up a chair in the reel, or go back ◀"
-      : `Scene ${Math.max(1, revealed)} of 4 · take your time — next scene: click the reel, scroll, or rest your mouse on the right edge`;
+      ? fit.mobile
+        ? "Scene 4 of 4 · pull up a chair"
+        : "Scene 4 of 4 · pull up a chair in the reel, or go back ◀"
+      : fit.mobile
+        ? `Scene ${Math.max(1, revealed)} of 4 · tap or swipe for the next`
+        : `Scene ${Math.max(1, revealed)} of 4 · take your time — next scene: click the reel, scroll, or rest your mouse on the right edge`;
 
   const edgeL = !lying && cine === "idle" && revealed > 1 ? (edgeDir === -1 ? 1 : 0.45) : 0;
   const edgeR = !lying && cine === "idle" && revealed > 0 && revealed < 4 ? (edgeDir === 1 ? 1 : 0.45) : 0;
@@ -391,6 +408,12 @@ export default function Reel3D() {
                         tabIndex={live ? 0 : -1}
                         className="visible relative z-[5] inline-flex min-h-11 items-center rounded-full px-[22px] text-[13px] font-bold uppercase tracking-[1.5px] text-transparent no-underline outline-offset-4 focus-visible:outline-2 focus-visible:outline-[#E0A54A]"
                         style={{ pointerEvents: live ? "auto" : "none" }}
+                        onClick={(e) => {
+                          // Play the countdown + flash first; it navigates to /home at the end.
+                          if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+                          e.preventDefault();
+                          playCountdown();
+                        }}
                         onMouseEnter={() => setChairHot(true)}
                         onMouseLeave={() => setChairHot(false)}
                       >
@@ -430,20 +453,27 @@ export default function Reel3D() {
       onPointerMove={onMove}
       onPointerUp={onUp}
       onPointerLeave={onCancel}
-      className="relative flex min-h-screen select-none flex-col justify-center overflow-hidden pb-12 pt-[72px] text-ink"
+      className="relative flex min-h-[100dvh] select-none flex-col justify-center overflow-hidden pb-20 pt-16 text-ink md:pb-12 md:pt-[72px]"
       style={{ background: "radial-gradient(ellipse at 50% 70%, var(--surface2) 0%, var(--deep) 60%)", touchAction: "none" }}
     >
-      <span className="absolute left-8 top-8 z-[6] text-xs uppercase tracking-[3px] text-muted">A Howrah production</span>
-      <Link href="/home" className="absolute right-8 top-[22px] z-[6] inline-flex min-h-11 items-center text-xs uppercase tracking-[2px] text-soft">
+      <span className="absolute left-5 top-7 z-[6] text-[10px] uppercase tracking-[2.5px] text-muted md:left-8 md:top-8 md:text-xs md:tracking-[3px]">A Howrah production</span>
+      <Link href="/home" className="absolute right-5 top-[18px] z-[6] inline-flex md:right-8 md:top-[22px] min-h-11 items-center text-xs uppercase tracking-[2px] text-soft">
         Skip →
       </Link>
 
-      {/* 3D STAGE */}
+      {/* 3D STAGE (scaled down to fit on phones) */}
+      <div className="relative" style={{ height: 600 * fit.s - (fit.mobile ? 70 : 0) }}>
       <div
         onPointerDown={onDown}
         onWheel={onWheel}
         className="relative h-[600px] cursor-grab"
-        style={{ ...toStyle(LT ? LIGHT_VARS : DARK_VARS), perspective: 1600, perspectiveOrigin: lying ? "50% 28%" : "50% 50%" }}
+        style={{
+          ...toStyle(LT ? LIGHT_VARS : DARK_VARS),
+          perspective: 1600,
+          perspectiveOrigin: lying ? "50% 28%" : "50% 50%",
+          transform: fit.s < 1 ? `scale(${fit.s})` : undefined,
+          transformOrigin: "50% 0",
+        }}
       >
         <div
           className="absolute left-1/2 h-0 w-0"
@@ -575,18 +605,19 @@ export default function Reel3D() {
           </button>
         </div>
       </div>
+      </div>
 
-      {/* edge cues */}
+      {/* edge cues (mouse only) */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-0 z-[5] flex w-[14%] items-center pl-[22px] transition-opacity duration-300"
+        className="pointer-events-none absolute inset-y-0 left-0 z-[5] hidden w-[14%] md:flex items-center pl-[22px] transition-opacity duration-300"
         style={{ opacity: edgeL, background: "linear-gradient(90deg, rgba(var(--deep-rgb),0.7), rgba(var(--deep-rgb),0))" }}
       >
         <span className="font-typewriter text-[13px] tracking-[1px] text-soft">◀ previous scene</span>
       </div>
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 right-0 z-[5] flex w-[14%] items-center justify-end pr-[22px] transition-opacity duration-300"
+        className="pointer-events-none absolute inset-y-0 right-0 z-[5] hidden w-[14%] md:flex items-center justify-end pr-[22px] transition-opacity duration-300"
         style={{ opacity: edgeR, background: "linear-gradient(270deg, rgba(var(--deep-rgb),0.7), rgba(var(--deep-rgb),0))" }}
       >
         <span className="font-typewriter text-[13px] tracking-[1px] text-soft">next scene ▶</span>
@@ -594,7 +625,7 @@ export default function Reel3D() {
 
       {/* caption + controls (the only "Pull up a chair" lives inside the reel) */}
       <div className="relative z-[4] mt-2 flex flex-col items-center gap-3 text-center">
-        <span className="px-6 font-typewriter text-[15px] tracking-[2px] text-soft">{hint}</span>
+        <span className="px-6 font-typewriter text-[13px] tracking-[1.5px] text-soft md:text-[15px] md:tracking-[2px]">{hint}</span>
         <div className="flex items-center gap-3.5">
           <button type="button" onClick={() => rollBy(-1)} aria-label="Roll the film back one scene" className="h-11 w-11 rounded-full border border-line2 bg-transparent text-sm text-soft">
             ◀

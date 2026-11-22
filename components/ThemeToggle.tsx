@@ -1,12 +1,18 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useMounted } from "@/lib/useMounted";
+
+// These pages are always dark, so the toggle would do nothing there.
+const ALWAYS_DARK = ["/music", "/cinema"];
 
 export default function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const mounted = useMounted();
+  const pathname = usePathname();
   const dark = !mounted || resolvedTheme !== "light";
+  if (ALWAYS_DARK.some((p) => pathname?.startsWith(p))) return null;
 
   return (
     <button
