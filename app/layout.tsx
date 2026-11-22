@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   description:
     "Backend developer from Howrah building ONDC and e-commerce systems at Senrysa. Also a teacher, a cinephile and a listener of ghazals.",
   openGraph: {
+    type: "website",
+    url: "/",
+    siteName: "Anjali Gupta",
     title: "Anjali Gupta",
     description: "Developer · Teacher · Cinephile · Listener of ghazals",
     images: ["/images/hero-temple.jpg"],
