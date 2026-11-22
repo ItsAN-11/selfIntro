@@ -39,7 +39,7 @@ export default function ContactForm() {
 
   if (state?.ok) {
     return (
-      <div className="flex flex-[1_1_400px] flex-col justify-center gap-3 rounded-2xl border border-line bg-surface p-8">
+      <div className="flex flex-[1_1_340px] flex-col justify-center gap-3 rounded-2xl border border-line bg-surface p-6 md:p-8">
         <p className="font-display text-3xl font-bold">Got it, thank you.</p>
         <p className="text-soft">Your message is in my inbox. I&apos;ll reply to the email you left.</p>
       </div>
@@ -47,7 +47,7 @@ export default function ContactForm() {
   }
 
   return (
-    <form action={action} className="flex flex-[1_1_400px] flex-col gap-4">
+    <form action={action} className="flex min-w-0 flex-[1_1_340px] flex-col gap-3.5 md:gap-4">
       <input type="hidden" name="topic" value={topic} />
       <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" />
       <div className="flex flex-col gap-2">
@@ -59,7 +59,7 @@ export default function ContactForm() {
               type="button"
               aria-pressed={topic === id}
               onClick={() => setTopic(id)}
-              className={`min-h-10 rounded-full border px-4 text-[13px] font-semibold transition-colors ${
+              className={`min-h-9 rounded-full border px-3 text-xs font-semibold md:min-h-10 md:px-4 md:text-[13px] transition-colors ${
                 topic === id ? "border-accent bg-accent text-on-accent" : "border-line2 text-ink"
               }`}
             >
@@ -68,7 +68,7 @@ export default function ContactForm() {
           ))}
         </div>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-3.5 sm:grid-cols-2 md:gap-4">
         <label className="flex flex-col gap-1.5 text-sm text-soft">
           Your name
           <input name="name" className="field" autoComplete="name" />
@@ -80,13 +80,13 @@ export default function ContactForm() {
       </div>
       <label className="flex flex-col gap-1.5 text-sm text-soft">
         {LABEL[topic]}
-        <textarea name="message" rows={4} required placeholder={HINT[topic]} className="field resize-y" />
+        <textarea name="message" rows={3} required placeholder={HINT[topic]} className="field resize-y" />
       </label>
-      <button type="submit" disabled={pending} className="btn-accent min-h-[52px] justify-center text-[15px] disabled:opacity-60">
+      <button type="submit" disabled={pending} className="btn-accent min-h-12 justify-center text-sm md:min-h-[52px] md:text-[15px] disabled:opacity-60">
         {pending ? "Sending…" : "Send message"}
       </button>
       {state && !state.ok && !state.fallback && <p className="text-sm text-[#E0745A]">{state.error}</p>}
-      <p className="text-[13px] text-muted">
+      <p className="break-words text-xs text-muted md:text-[13px]">
         Or write directly to{" "}
         <a href={`mailto:${site.email}`} className="text-accent">
           {site.email}

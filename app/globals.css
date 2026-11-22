@@ -215,6 +215,13 @@ a {
   outline: none;
   transition: border-color 200ms ease;
 }
+@media (max-width: 767px) {
+  .field {
+    min-height: 42px;
+    padding: 9px 12px;
+    font-size: 16px; /* below 16px iOS zooms in on focus */
+  }
+}
 .field:focus {
   border-color: var(--accent);
 }
