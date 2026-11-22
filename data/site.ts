@@ -8,8 +8,8 @@ export const site = {
   resume: "/resume.pdf",
   // Show the Netflix resume (/cinema)
   showCinema: false,
-  // TODO: what you're watching right now
-  currentlyInto: "[WHAT YOU'RE WATCHING]",
+  // What you're watching right now (hidden when empty)
+  currentlyInto: "",
   spotify: "https://open.spotify.com/playlist/6jw0VaOzkTbH7iRS2LyC3A",
   upi: {
     id: "2021anjaligupta26@oksbi",

@@ -320,6 +320,16 @@ a {
   text-transform: uppercase;
   opacity: 0.75;
 }
+@media (max-width: 767px) {
+  .cover .disc {
+    right: -40%;
+    width: 66%;
+  }
+  .cover .side {
+    font-size: 8px;
+    letter-spacing: 2px;
+  }
+}
 a:hover .cover .disc {
   transform: translateX(-26%) rotate(120deg);
 }

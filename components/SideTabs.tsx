@@ -8,7 +8,7 @@ const tab =
 /** The two "other resumes", pinned to the right edge. They open out on hover. */
 export default function SideTabs() {
   return (
-    <nav aria-label="My other resumes" className="fixed right-0 top-1/2 z-40 flex -translate-y-1/2 flex-col items-end gap-2.5">
+    <nav aria-label="My other resumes" className="fixed right-0 top-1/2 z-40 hidden -translate-y-1/2 flex-col items-end gap-2.5 md:flex">
       <Link href="/music" aria-label="Spotify resume" className={`${tab} border-[#1ED760] bg-bg text-[#1ED760] hover:bg-[#1ED760] hover:text-[#0E0C0A]`}>
         <MusicIcon />
         <span className="max-w-0 overflow-hidden whitespace-nowrap transition-[max-width] duration-300 group-hover:max-w-40 group-focus-visible:max-w-40">

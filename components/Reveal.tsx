@@ -14,12 +14,14 @@ export default function Reveal({ children, className }: { children: ReactNode; c
     () => {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
+        // Never hide what's already on screen.
+        if (el.getBoundingClientRect().top < window.innerHeight) return;
         gsap.from(el, {
           opacity: 0,
-          y: 40,
-          duration: 0.9,
+          y: 24,
+          duration: 0.6,
           ease: "power3.out",
-          scrollTrigger: { trigger: el, start: "top 88%", once: true },
+          scrollTrigger: { trigger: el, start: "top 95%", once: true },
         });
       });
     },

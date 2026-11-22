@@ -36,7 +36,7 @@ export const profile = {
   name: "anjali",
   label: "Premium user",
   playlistsCount: 7,
-  photo: "/images/music/profile.jpg",
+  photo: "/images/music/profile-earphones.jpg",
 };
 
 export const playlists = [

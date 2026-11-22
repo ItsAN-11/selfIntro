@@ -39,10 +39,11 @@ export default function TenureRow({ j, defaultOpen = false }: { j: Tenure; defau
           src={j.photo}
           alt={j.logo ? `${j.org} logo` : `${j.org}`}
           fill
-          sizes="220px"
+          loading="eager"
+          sizes="(min-width: 768px) 220px, 100vw"
           className={j.logo ? "object-contain p-4" : "object-cover"}
         />
-        {j.photo2 && <Image src={j.photo2} alt="" fill sizes="220px" className="pair-fade object-cover" />}
+        {j.photo2 && <Image src={j.photo2} alt="" fill loading="eager" sizes="(min-width: 768px) 220px, 100vw" className="pair-fade object-cover" />}
       </div>
     </article>
   );

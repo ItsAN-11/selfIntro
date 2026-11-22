@@ -6,6 +6,7 @@ import FilmStrip from "@/components/FilmStrip";
 import SideTabs from "@/components/SideTabs";
 import ContactForm from "@/components/ContactForm";
 import Reveal from "@/components/Reveal";
+import MobileMenu from "@/components/MobileMenu";
 import { GitHubIcon, LinkedInIcon } from "@/components/icons";
 import { projects } from "@/data/projects";
 import { stack } from "@/data/stack";
@@ -22,17 +23,28 @@ export default function HomePage() {
     ["working at", "Senrysa Technologies"],
     ["focussed on", "backend systems"],
     ["currently into", site.currentlyInto],
-  ];
+  ].filter(([, v]) => v);
 
   return (
     <Reveal className="min-h-screen text-base leading-relaxed">
       {/* NAV */}
       <header className="border-b border-line">
-        <nav className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-4 px-8 py-5">
-          <Link href="/" className="font-display text-[26px] font-bold tracking-[0.5px] text-ink no-underline">
+        <nav className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-5 py-4 md:px-8 md:py-5">
+          <Link href="/" className="font-display text-[22px] font-bold tracking-[0.5px] text-ink no-underline md:text-[26px]">
             anjali.gupta
           </Link>
-          <div className="flex flex-wrap gap-7 text-[13px] uppercase tracking-[1.5px]">
+          <MobileMenu
+            items={[
+              { href: "#about", label: "About" },
+              { href: "#work", label: "Work" },
+              { href: "/projects", label: "Projects" },
+              { href: "/projects#journey", label: "Journey" },
+              { href: "/music", label: "Spotify resume" },
+              { href: "#credits", label: "Contact" },
+              { href: site.resume, label: "Resume.pdf", external: true, accent: true },
+            ]}
+          />
+          <div className="hidden flex-wrap gap-7 text-[13px] uppercase tracking-[1.5px] md:flex">
             <a href="#about" className={navLink}>
               <MagneticText text="About" />
             </a>
@@ -58,7 +70,7 @@ export default function HomePage() {
       {/* HERO */}
       <section
         id="top"
-        className="mx-auto grid max-w-[1200px] items-stretch gap-[clamp(28px,5vw,72px)] px-8 py-[72px] md:grid-cols-[minmax(0,1.25fr)_minmax(200px,1fr)]"
+        className="mx-auto grid max-w-[1200px] items-stretch gap-[clamp(28px,5vw,72px)] px-8 py-12 md:py-[72px] md:grid-cols-[minmax(0,1.25fr)_minmax(200px,1fr)]"
       >
         <div className="flex min-w-0 flex-col justify-center">
           <MagneticText as="p" text="Now showing · A Howrah production" className="mb-5 text-[13px] uppercase tracking-[3px] text-accent" />
@@ -82,14 +94,14 @@ export default function HomePage() {
           </div>
         </div>
 
-        <figure className="relative m-0 flex min-h-[420px]" data-reveal>
+        <figure className="relative m-0 flex min-h-[420px]">
           <div aria-hidden className="absolute inset-[16px_-12px_-16px_16px] rounded-md border border-accent" />
           <div className="relative flex-1 overflow-hidden rounded-md bg-surface shadow-[0_24px_50px_rgba(0,0,0,0.55)]">
             <Image
               src="/images/hero-temple.jpg"
               alt="Anjali in a brown shirt and cap, sitting in front of old terracotta temples"
               fill
-              priority
+              preload
               sizes="(min-width: 768px) 45vw, 100vw"
               className="object-cover object-[45%_35%]"
             />
@@ -157,7 +169,7 @@ export default function HomePage() {
             {stack.map((k) => (
               <div key={k.name} className="flex w-[78px] flex-col items-center gap-2.5">
                 <span aria-hidden className="inline-flex h-14 w-14 items-center justify-center overflow-hidden rounded-[14px] border border-line bg-white shadow-[0_6px_16px_-8px_rgba(0,0,0,.45)]">
-                  <Image src={k.logo} alt="" width={56} height={56} className="h-full w-full object-contain" />
+                  <Image src={k.logo} alt="" width={56} height={56} loading="eager" className="h-full w-full object-contain" />
                 </span>
                 <span className="text-center text-[13px] leading-tight text-soft">{k.name}</span>
               </div>
@@ -185,7 +197,7 @@ export default function HomePage() {
       </section>
 
       {/* END CREDITS */}
-      <footer id="credits" className="mx-auto max-w-[1200px] px-8 pb-12 pt-24">
+      <footer id="credits" className="mx-auto max-w-[1200px] px-8 pb-28 pt-24 md:pb-12">
         <div className="flex flex-wrap gap-14">
           <div className="flex-[1_1_320px]">
             <p className="mb-2 text-[13px] uppercase tracking-[3px] text-accent">End credits</p>

@@ -13,7 +13,7 @@ export default function ThemeToggle() {
       type="button"
       onClick={() => setTheme(dark ? "light" : "dark")}
       aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
-      className="fixed bottom-5 left-5 z-[60] inline-flex h-12 w-12 items-center justify-center rounded-full border border-line2 bg-surface text-ink shadow-[0_6px_18px_rgba(0,0,0,0.25)]"
+      className="fixed bottom-4 left-4 z-[60] inline-flex h-10 w-10 items-center md:bottom-5 md:left-5 md:h-12 md:w-12 justify-center rounded-full border border-line2 bg-surface text-ink shadow-[0_6px_18px_rgba(0,0,0,0.25)]"
     >
       {dark ? (
         <svg aria-hidden width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">

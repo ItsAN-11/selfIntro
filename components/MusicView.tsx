@@ -19,21 +19,29 @@ const ARCHIVO = { fontFamily: "var(--font-archivo)", fontStretch: "125%", fontWe
 const sectionTitle = "mb-9 text-[clamp(34px,5vw,56px)] text-[#CFC3B0] underline underline-offset-8";
 const box = "relative z-[1] flex flex-col gap-[22px] self-start border border-[#CFC3B0] bg-[rgba(14,12,10,0.9)] px-5 py-10 text-center";
 
-function Cover({ t }: { t: MusicCard }) {
+function Cover({ t, first }: { t: MusicCard; first: boolean }) {
   return (
-    <a href={t.url} target="_blank" rel="noopener" aria-label={`${t.title} by ${t.artist} on Spotify`} className="mb-[18px] block break-inside-avoid text-[#F1E8D8] no-underline">
+    <a href={t.url} target="_blank" rel="noopener" aria-label={`${t.title} by ${t.artist} on Spotify`} className="mb-3 block md:mb-[18px] break-inside-avoid text-[#F1E8D8] no-underline">
       <div
-        className="cover flex flex-col justify-between p-[18px]"
+        className="cover flex flex-col justify-between p-3 md:p-[18px]"
         style={{ aspectRatio: t.ar, background: t.bg ?? "#1A140F", color: t.ink ?? "#F1E8D8" }}
       >
         {t.img ? (
-          <img src={t.img} alt={`${t.title} cover`} className="absolute inset-0 z-0 h-full w-full object-cover" />
+          <Image
+            src={t.img}
+            alt={`${t.title} cover`}
+            fill
+            loading="eager"
+            fetchPriority={first ? "high" : "auto"}
+            sizes="(min-width: 768px) 300px, 50vw"
+            className="z-0 object-cover"
+          />
         ) : (
           <>
             <span className="sun" style={{ width: t.sz, aspectRatio: 1, left: t.sx, top: t.sy, background: t.sun }} />
             <span className="disc" style={{ ["--lab" as string]: t.lab }} />
             <span className="side">{t.tag} · Side A</span>
-            <span className="ttl" style={{ fontSize: t.fs }}>
+            <span className="ttl" style={{ fontSize: `min(${t.fs}, 7.5vw)` }}>
               {t.title}
             </span>
           </>
@@ -77,9 +85,10 @@ export default function MusicView({ initial }: { initial: MusicData }) {
         ease: "none",
         scrollTrigger: { trigger: "[data-cards]", start: "top 70%", end: "top 10%", scrub: true },
       });
-      gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) =>
-        gsap.from(el, { opacity: 0, y: 50, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%", once: true } }),
-      );
+      gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
+        if (el.getBoundingClientRect().top < window.innerHeight) return;
+        gsap.from(el, { opacity: 0, y: 24, duration: 0.6, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 95%", once: true } });
+      });
     },
     { scope: root },
   );
@@ -130,9 +139,9 @@ export default function MusicView({ initial }: { initial: MusicData }) {
 
         <section data-cards className="relative z-[1] bg-[#0E0C0A] pt-6">
           <div className="mx-auto max-w-[1240px] px-8">
-            <div className="[column-gap:18px] [columns:4_240px]">
-              {cards.map((t) => (
-                <Cover key={t.url} t={t} />
+            <div className="[column-gap:12px] [columns:2] md:[column-gap:18px] md:[columns:4_240px]">
+              {cards.map((t, i) => (
+                <Cover key={t.url} t={t} first={i < 3} />
               ))}
             </div>
           </div>
@@ -140,7 +149,7 @@ export default function MusicView({ initial }: { initial: MusicData }) {
       </div>
 
       {/* QUOTE */}
-      <section className="mx-auto max-w-[900px] px-8 py-[200px] text-center" data-reveal>
+      <section className="mx-auto max-w-[900px] px-8 py-24 text-center md:py-[200px]" data-reveal>
         <p className="text-[clamp(17px,1.9vw,21px)] font-medium uppercase leading-normal tracking-[0.5px] text-[#E8DCC6]">“{quotes.middle.text}” —</p>
         <p className="mt-1 text-[clamp(17px,1.9vw,21px)] lowercase text-[#1ED760]">{quotes.middle.by}</p>
       </section>
@@ -149,8 +158,8 @@ export default function MusicView({ initial }: { initial: MusicData }) {
       <section className="mx-auto max-w-[1240px] px-8" data-reveal>
         <div className="flex flex-wrap items-center justify-between gap-10">
           <div className="flex flex-wrap items-center gap-6">
-            <div className="relative h-[220px] w-[220px] overflow-hidden border border-[#3A322B] bg-[#241E19]">
-              <Image src={profile.photo} alt="Anjali striking a Nataraja pose beside a bronze Nataraja" fill sizes="220px" className="object-cover" />
+            <div className="relative aspect-[9/16] w-[200px] overflow-hidden border border-[#3A322B] bg-[#241E19] md:w-[220px]">
+              <Image src={profile.photo} alt="Anjali listening to music on earphones" fill loading="eager" sizes="220px" className="object-cover" />
             </div>
             <div className="flex flex-col gap-1.5">
               <span className="text-sm text-[#CFC3B0]">{profile.label}</span>
@@ -167,7 +176,7 @@ export default function MusicView({ initial }: { initial: MusicData }) {
             {playlists.map((l) => (
               <div key={l.url} className="flex items-center gap-3.5 rounded-md bg-[#1A1613] p-2.5">
                 <span className="relative h-[76px] w-[76px] flex-none overflow-hidden rounded">
-                  <Image src={l.img} alt="" fill sizes="76px" className="object-cover" />
+                  <Image src={l.img} alt="" fill loading="eager" sizes="76px" className="object-cover" />
                 </span>
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span>{l.name}</span>
@@ -184,7 +193,7 @@ export default function MusicView({ initial }: { initial: MusicData }) {
       </section>
 
       {/* TOP TRACKS */}
-      <section className="mx-auto max-w-[1240px] px-8 pt-[180px]">
+      <section className="mx-auto max-w-[1240px] px-8 pt-24 md:pt-[180px]">
         <MagneticText as="h2" text="#TopTracks" className={sectionTitle} style={ARCHIVO} />
         <div className="grid grid-cols-12">
           <Slideshow
@@ -207,7 +216,7 @@ export default function MusicView({ initial }: { initial: MusicData }) {
       </section>
 
       {/* TOP ARTISTS */}
-      <section className="mx-auto max-w-[1240px] px-8 pt-[180px]">
+      <section className="mx-auto max-w-[1240px] px-8 pt-24 md:pt-[180px]">
         <MagneticText as="h2" text="#TopArtists" className={sectionTitle} style={ARCHIVO} />
         <div className="grid grid-cols-12">
           <Slideshow
@@ -230,7 +239,7 @@ export default function MusicView({ initial }: { initial: MusicData }) {
       </section>
 
       {/* SHARE MUSIC */}
-      <section className="mx-auto max-w-[1240px] px-8 pt-[180px]">
+      <section className="mx-auto max-w-[1240px] px-8 pt-24 md:pt-[180px]">
         <MagneticText as="h2" text="#ShareMusic" className={sectionTitle} style={ARCHIVO} />
         <div className="flex flex-wrap gap-3.5">
           <button
@@ -274,7 +283,7 @@ export default function MusicView({ initial }: { initial: MusicData }) {
       </section>
 
       {/* CLOSING QUOTE */}
-      <section className="mx-auto max-w-[900px] px-8 pt-[200px] text-center" data-reveal>
+      <section className="mx-auto max-w-[900px] px-8 pt-24 text-center md:pt-[200px]" data-reveal>
         <p className="text-[clamp(17px,1.9vw,21px)] font-medium uppercase leading-normal tracking-[0.5px] text-[#E8DCC6]">“{quotes.end.text}” —</p>
         <p className="mt-1 text-[clamp(17px,1.9vw,21px)] lowercase text-[#1ED760]">{quotes.end.by}</p>
       </section>
