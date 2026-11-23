@@ -41,9 +41,8 @@ export default function HomePage() {
               { href: "#work", label: "Work" },
               { href: "/projects", label: "Projects" },
               { href: "/projects#journey", label: "Journey" },
-              { href: "/music", label: "Spotify resume" },
               { href: "#credits", label: "Contact" },
-              { href: site.resume, label: "Resume.pdf", external: true, accent: true },
+              { href: site.resumeView, label: "Resume.pdf", external: true, accent: true },
             ]}
           />
           <div className="hidden flex-wrap gap-7 text-[13px] uppercase tracking-[1.5px] md:flex">
@@ -62,7 +61,7 @@ export default function HomePage() {
             <a href="#credits" className={navLink}>
               <MagneticText text="Contact" />
             </a>
-            <a href={site.resume} target="_blank" rel="noopener" className="text-accent underline">
+            <a href={site.resumeView} target="_blank" rel="noopener" className="text-accent underline">
               <MagneticText text="Resume.pdf" />
             </a>
           </div>
@@ -234,7 +233,7 @@ export default function HomePage() {
               <a href={site.linkedin} target="_blank" rel="noopener" aria-label="LinkedIn" className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line2 text-ink md:h-12 md:w-12">
                 <LinkedInIcon />
               </a>
-              <a href={site.resume} download className="btn-ghost min-h-11 border-accent text-sm text-accent md:min-h-12 md:text-base">
+              <a href={site.resume} download="Anjali_Gupta_Resume.pdf" className="btn-ghost min-h-11 border-accent text-sm text-accent md:min-h-12 md:text-base">
                 Download resume
               </a>
             </div>

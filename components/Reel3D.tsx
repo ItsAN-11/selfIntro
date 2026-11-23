@@ -118,12 +118,14 @@ export default function Reel3D() {
     if (state.current.cine !== "idle") return;
     tl.current?.kill();
     const t = gsap.timeline();
-    t.call(() => setCine("zoom"))
-      .call(() => { setCine("count"); setCount(3); }, [], 0.95)
-      .call(() => setCount(2), [], 1.3)
-      .call(() => setCount(1), [], 1.65)
-      .call(() => setCine("flash"), [], 2.0)
-      .call(() => router.push("/home"), [], 2.2);
+    // Phones skip the zoom into the reel and go straight to the countdown.
+    const z = window.innerWidth < 768 ? 0 : 0.95;
+    if (z) t.call(() => setCine("zoom"));
+    t.call(() => { setCine("count"); setCount(3); }, [], z)
+      .call(() => setCount(2), [], z + 0.35)
+      .call(() => setCount(1), [], z + 0.7)
+      .call(() => setCine("flash"), [], z + 1.05)
+      .call(() => router.push("/home"), [], z + 1.25);
     tl.current = t;
   }, [router]);
 
@@ -273,7 +275,7 @@ export default function Reel3D() {
     return d.trim();
   }, [wv, sc]);
 
-  const zooming = cine === "zoom" || cine === "count";
+  const zooming = !fit.mobile && (cine === "zoom" || cine === "count"); // no zoom on phones
   const revealed = dragging && !lying ? Math.max(0, Math.min(4, Math.floor((p - NECK + FL * 0.35) / FL))) : scene;
   const focusIdx = Math.max(0, revealed - 1);
   const camX = lying ? 0 : zooming ? -(3.5 * FL) : dragging || !scene ? -Math.max(0, p - 300) : -((scene - 0.5) * FL + (fit.mobile ? 0 : 60));

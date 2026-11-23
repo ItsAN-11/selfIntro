@@ -5,7 +5,9 @@ export const site = {
   email: "2021anjaligupta26@gmail.com",
   github: "https://github.com/ItsAN-11",
   linkedin: "https://www.linkedin.com/in/anjali-gupta-0318b9264",
+  // resume.pdf: plain-text links (download, ATS). resume-view.pdf: icon links (opened in the browser).
   resume: "/resume.pdf",
+  resumeView: "/resume-view.pdf",
   // Show the Netflix resume (/cinema)
   showCinema: false,
   // What you're watching right now (hidden when empty)

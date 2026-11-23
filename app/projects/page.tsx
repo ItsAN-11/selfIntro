@@ -25,7 +25,7 @@ export default function ProjectsPage() {
           <a href={site.github} target="_blank" rel="noopener" className={`${topLink} text-accent`}>
             GitHub ↗
           </a>
-          <a href={site.resume} target="_blank" rel="noopener" className={`${topLink} text-accent`}>
+          <a href={site.resumeView} target="_blank" rel="noopener" className={`${topLink} text-accent`}>
             Resume.pdf
           </a>
         </span>
